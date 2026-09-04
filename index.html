@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Focus Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body class="min-h-screen transition-colors duration-300 bg-page text-primary">
+
+    <!-- ── TOP BAR ─────────────────────────────────────────────── -->
+    <header class="flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
+      <h1 class="text-xl font-bold tracking-wide text-accent">Focus Dashboard</h1>
+      <!-- Theme Toggle -->
+      <button
+        id="themeToggle"
+        title="Toggle light / dark mode"
+        class="w-10 h-10 rounded-full flex items-center justify-center bg-card border border-border hover:scale-105 transition-transform"
+      >
+        <span id="themeIcon" class="text-xl">🌙</span>
+      </button>
+    </header>
+
+    <!-- ── MAIN GRID ─────────────────────────────────────────────── -->
+    <main class="max-w-5xl mx-auto px-6 pb-10 grid gap-5">
+
+      <!-- ── 1. GREETING ─────────────────────────────────────────── -->
+      <section id="greetingSection" class="card text-center py-8">
+        <p id="clock" class="text-5xl font-bold tracking-widest text-accent"></p>
+        <p id="dateDisplay" class="mt-2 text-sm text-secondary"></p>
+        <p id="greeting" class="mt-3 text-2xl font-semibold"></p>
+      </section>
+
+      <!-- ── 2+3 ROW: TIMER + TASKS ──────────────────────────────── -->
+      <div class="grid md:grid-cols-2 gap-5">
+
+        <!-- ── 2. FOCUS TIMER ──────────────────────────────────────── -->
+        <section class="card flex flex-col gap-4">
+          <h2 class="text-lg font-bold text-center">Focus Timer</h2>
+
+          <!-- Duration presets -->
+          <div class="flex justify-center gap-2 flex-wrap">
+            <button data-minutes="25" class="preset-btn btn-outline text-xs px-3 py-1 rounded-full active-preset">25 min</button>
+            <button data-minutes="50" class="preset-btn btn-outline text-xs px-3 py-1 rounded-full">50 min</button>
+            <button data-minutes="5"  class="preset-btn btn-outline text-xs px-3 py-1 rounded-full">5 min</button>
+            <button data-minutes="15" class="preset-btn btn-outline text-xs px-3 py-1 rounded-full">15 min</button>
+          </div>
+
+          <!-- Timer display -->
+          <p id="timerDisplay" class="text-6xl font-bold text-center tracking-widest text-accent">25:00</p>
+
+          <!-- Progress ring -->
+          <div class="flex justify-center">
+            <svg class="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="54" fill="none" stroke-width="8" class="stroke-border" />
+              <circle
+                id="progressRing"
+                cx="60" cy="60" r="54"
+                fill="none" stroke-width="8"
+                stroke-linecap="round"
+                class="stroke-accent"
+                stroke-dasharray="339.29"
+                stroke-dashoffset="0"
+              />
+            </svg>
+          </div>
+
+          <!-- Controls -->
+          <div class="flex justify-center gap-3">
+            <button id="startBtn"  class="btn-primary px-5 py-2 rounded-lg font-semibold">Start</button>
+            <button id="stopBtn"   class="btn-secondary px-5 py-2 rounded-lg font-semibold">Stop</button>
+            <button id="resetBtn"  class="btn-outline px-5 py-2 rounded-lg font-semibold">Reset</button>
+          </div>
+
+          <!-- Session counter -->
+          <p class="text-center text-xs text-secondary">
+            Sessions completed: <span id="sessionCount" class="font-bold text-accent">0</span>
+          </p>
+        </section>
+
+        <!-- ── 3. TO-DO LIST ──────────────────────────────────────── -->
+        <section class="card flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-bold">Tasks</h2>
+            <!-- Sort controls -->
+            <div class="flex items-center gap-2">
+              <label for="sortSelect" class="text-xs text-secondary">Sort:</label>
+              <select id="sortSelect" class="text-xs bg-card border border-border rounded px-2 py-1 text-primary focus:outline-none">
+                <option value="default">Default</option>
+                <option value="az">A → Z</option>
+                <option value="za">Z → A</option>
+                <option value="completed">Completed last</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Add task input -->
+          <div class="flex gap-2">
+            <input
+              id="taskInput"
+              type="text"
+              placeholder="Add a new task..."
+              maxlength="120"
+              class="flex-1 input-field rounded-lg px-3 py-2 text-sm focus:outline-none"
+            />
+            <button id="addTaskBtn" class="btn-primary px-4 py-2 rounded-lg font-semibold text-sm">Add</button>
+          </div>
+
+          <!-- Task list -->
+          <ul id="taskList" class="flex flex-col gap-2 overflow-y-auto max-h-72 pr-1"></ul>
+
+          <!-- Empty state -->
+          <p id="emptyTasks" class="text-center text-secondary text-sm hidden">No tasks yet. Add one above!</p>
+        </section>
+      </div>
+
+      <!-- ── 4. QUICK LINKS ──────────────────────────────────────── -->
+      <section class="card flex flex-col gap-4">
+        <h2 class="text-lg font-bold">Quick Links</h2>
+
+        <!-- Add link form -->
+        <div class="flex gap-2 flex-wrap">
+          <input
+            id="linkNameInput"
+            type="text"
+            placeholder="Link name"
+            maxlength="30"
+            class="input-field rounded-lg px-3 py-2 text-sm flex-1 min-w-[120px] focus:outline-none"
+          />
+          <input
+            id="linkUrlInput"
+            type="url"
+            placeholder="https://..."
+            maxlength="200"
+            class="input-field rounded-lg px-3 py-2 text-sm flex-1 min-w-[160px] focus:outline-none"
+          />
+          <button id="addLinkBtn" class="btn-primary px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap">Add Link</button>
+        </div>
+
+        <!-- Links grid -->
+        <div id="linkList" class="flex flex-wrap gap-2"></div>
+
+        <!-- Empty state -->
+        <p id="emptyLinks" class="text-center text-secondary text-sm hidden">No quick links yet. Add one above!</p>
+      </section>
+
+    </main>
+
+    <!-- ── EDIT TASK MODAL ─────────────────────────────────────── -->
+    <div id="editModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+      <div class="card w-full max-w-sm mx-4 flex flex-col gap-4">
+        <h3 class="font-bold text-lg">Edit Task</h3>
+        <input
+          id="editTaskInput"
+          type="text"
+          maxlength="120"
+          class="input-field rounded-lg px-3 py-2 text-sm focus:outline-none"
+        />
+        <div class="flex gap-3 justify-end">
+          <button id="cancelEditBtn" class="btn-outline px-4 py-2 rounded-lg text-sm">Cancel</button>
+          <button id="saveEditBtn"   class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── APP SCRIPT ─────────────────────────────────────────── -->
+    <script src="js/app.js"></script>
+  </body>
+</html>
